@@ -110,11 +110,13 @@
                 }
 
                 //Tab Click action function
-                $respTabs.find("[role=tab]").each(function () {
-                   
+               $respTabs.find("[role=tab]").each(function () {
                     var $currentTab = $(this);
-                    $currentTab.click(function () {
-                        
+                    var respTabsHref = $currentTab.find('> a').attr('href');
+
+                    $currentTab.click(function (e) {
+                        e.preventDefault();
+
                         var $currentTab = $(this);
                         var $tabAria = $currentTab.attr('aria-controls');
 
@@ -137,27 +139,14 @@
                         }
                         //Trigger tab activation event
                         $currentTab.trigger('tabactivate', $currentTab);
-                        
+
                         //Update Browser History
                         if(historyApi) {
-                            var currentHash = window.location.hash;
-                            var newHash = respTabsId+(parseInt($tabAria.substring(9),10)+1).toString();
-                            if (currentHash!="") {
-                                var re = new RegExp(respTabsId+"[0-9]+");
-                                if (currentHash.match(re)!=null) {                                    
-                                    newHash = currentHash.replace(re,newHash);
-                                }
-                                else {
-                                    newHash = currentHash+"|"+newHash;
-                                }
-                            }
-                            else {
-                                newHash = '#'+newHash;
-                            }
-                            
-                            history.replaceState(null,null,newHash);
+                            history.pushState(null,null,respTabsHref);
                         }
                     });
+                });
+
                     
                 });
                 
